@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "237814845171",
+    "project_id": "desafio-fe594",
+    "storage_bucket": "desafio-fe594.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:237814845171:android:084978ac1d17e75630f186",
+        "android_client_info": {
+          "package_name": "com.example.desafio"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "237814845171-3s7rg7k1iahma0a8kv0dc25h1g86d5ac.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.desafio",
+            "certificate_hash": "eeace50fb1d016989deb82f119089f1f833aa9c5"
+          }
+        },
+        {
+          "client_id": "237814845171-844hcf80edv7f3hcvusd01f7h81ileib.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCn59E3I_ZxqUXxBVAJZSrj3dUWhcgfuS8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "237814845171-844hcf80edv7f3hcvusd01f7h81ileib.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "237814845171-trmo8rc7ocr6udjt8lc2lj4srs14kfmi.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.desafio"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
