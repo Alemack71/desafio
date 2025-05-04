@@ -216,7 +216,7 @@ class _CarSelectionScreenState extends State<CarSelectionScreen> {
               const SizedBox(height: 20),
               Center(
                 child: Text(
-                  "Bem vindo ${currentUser?.email ?? ""},"
+                  "Bem vindo ${currentUser?.email ?? ""}!"
                 ),
               ),
                 SingleChildScrollView(
