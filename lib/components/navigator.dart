@@ -4,13 +4,32 @@ import '../pages/car_selection_page.dart';
 
 class MyNavigator extends StatelessWidget {
   final int selectedIndex;
-  final Function(int) onDestinationSelected;
 
   const MyNavigator({
-    super.key, 
+    super.key,
     required this.selectedIndex,
-    required this.onDestinationSelected,
   });
+
+  void _navigate(BuildContext context, int index) {
+    Navigator.pop(context); // Fecha o Dialog antes de navegar
+
+    //Evitando que navegue para si mesmo
+    if (index == 0 && selectedIndex != 0) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const HomePage(selectedIndex: 0),
+        ),
+      );
+    } else if (index == 1 && selectedIndex != 1) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const CarSelectionScreen(selectedIndex: 1),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,45 +47,15 @@ class MyNavigator extends StatelessWidget {
         child: NavigationRail(
           extended: true,
           selectedIndex: selectedIndex,
-          onDestinationSelected: (int index) {
-            // Fecha o dialog antes de navegar
-            Navigator.pop(context); 
-
-            if (index == 0) {
-              // Se for Home
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => HomePage(selectedIndex: 0),
-                ),
-              );
-            } else if (index == 1) {
-              // Se for Car Selection
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CarSelectionScreen(selectedIndex: 1),
-                ),
-              );
-            }
-          },
-          destinations: const[
+          onDestinationSelected: (index) => _navigate(context, index),
+          destinations: const [
             NavigationRailDestination(
-              icon: Icon(
-                Icons.home, 
-                size: 30,
-              ),
-              label: Text(
-                'Home',
-                style: TextStyle(fontSize: 16),
-              ),
+              icon: Icon(Icons.home, size: 30),
+              label: Text('Home', style: TextStyle(fontSize: 16)),
             ),
             NavigationRailDestination(
               icon: Icon(Icons.question_answer),
-              label: Text(
-                'Chatbot',
-                style: TextStyle(fontSize: 16),
-              ),
+              label: Text('Chatbot', style: TextStyle(fontSize: 16)),
             ),
           ],
         ),

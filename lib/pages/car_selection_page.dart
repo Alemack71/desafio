@@ -38,34 +38,13 @@ class _CarSelectionScreenState extends State<CarSelectionScreen> {
       "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyA5Rviqje5bNnAb1AsPcm_aird7Jp2evR8";
   String apiResponse = "";
 
+  //Função para abrir menu bar
   void openNavigationRail() {
     showDialog(
       context: context,
-      barrierDismissible: true,
-      builder: (context) {
-        return MyNavigator(
-          selectedIndex: selectedIndex,
-          onDestinationSelected: (int index) {
-            Navigator.pop(context);
-
-            if (index == 0) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => HomePage(selectedIndex: 0),
-                ),
-              );
-            } else if (index == 1) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CarSelectionScreen(selectedIndex: 1),
-                ),
-              );
-            }
-          },
-        );
-      },
+      //Se clicar fora fecha
+      barrierDismissible: true, 
+      builder: (context) => MyNavigator(selectedIndex: selectedIndex),
     );
   }
 

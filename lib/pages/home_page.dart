@@ -32,16 +32,8 @@ class _HomePageState extends State<HomePage> {
     selectedIndex = widget.selectedIndex;
     fetchWeather();
     //Iniciando os valores vazios
-    _brandController1 = TextEditingController()..addListener(_updateButtonVisibility);
-    _brandController2 = TextEditingController()..addListener(_updateButtonVisibility);
-    _modelController1 = TextEditingController()..addListener(_updateButtonVisibility);
-    _modelController2 = TextEditingController()..addListener(_updateButtonVisibility);
   }
 
-  //Função para renderizar a tela sempre que algum campo muda
-  void _updateButtonVisibility() {
-    setState(() {}); 
-  }
   //Controller para outros widgets conseguirem ler o texto escrito pela IA 
   final TextEditingController _responseController = TextEditingController();
 
@@ -68,51 +60,25 @@ class _HomePageState extends State<HomePage> {
     "overcast clouds": "Nuvens nubladas",
   };
 
-//Função para abrir menu bar
-void openNavigationRail() {
+  //Função para abrir menu bar
+  void openNavigationRail() {
     showDialog(
       context: context,
       //Se clicar fora fecha
       barrierDismissible: true, 
-      builder: (context) {
-        return MyNavigator(
-          selectedIndex: selectedIndex,
-          onDestinationSelected: (int index) {
-            // Fecha o dialog antes de navegar
-            Navigator.pop(context); 
-
-            if (index == 0) {
-              // Se for Home
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => HomePage(selectedIndex: 0),
-                ),
-              );
-            } else if (index == 1) {
-              // Se for Car Selection
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CarSelectionScreen(selectedIndex: 1),
-                ),
-              );
-            }
-          },
-        );
-      },
+      builder: (context) => MyNavigator(selectedIndex: selectedIndex),
     );
   }
 
   //Função para deslogar usuário
   void signUserOut() async {
-  await FirebaseAuth.instance.signOut();
-  Navigator.pushAndRemoveUntil(
-    context,
-    MaterialPageRoute(builder: (context) => const AuthPage()),
-    (route) => false,
-  );
-}
+    await FirebaseAuth.instance.signOut();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const AuthPage()),
+      (route) => false,
+    );
+  }
 
   //Método para buscar previsão do tempo
   Future<void> fetchWeather() async {
@@ -182,7 +148,8 @@ void openNavigationRail() {
     return await Geolocator.getCurrentPosition();
   }
 
-final String apiRequestUrl =
+  //endpoint da api de IA
+  final String apiRequestUrl =
       "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyA5Rviqje5bNnAb1AsPcm_aird7Jp2evR8";
   String apiResponse = "";
 
