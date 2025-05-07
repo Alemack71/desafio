@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 //Componentes   -----------------------------------------------
-import 'package:desafio/components/my_button.dart';
 import 'package:desafio/components/navigator.dart';
 //              -----------------------------------------------
 import 'package:flutter/material.dart';

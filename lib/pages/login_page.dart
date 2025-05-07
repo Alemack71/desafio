@@ -22,21 +22,18 @@ class _LoginPageState extends State<LoginPage> {
 
   //Sign user in method
   void signUserIn() async {
-
     //Mostrando carregando
     showDialog(
-      context: context, 
+      context: context,
       builder: (context) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      }
+        return const Center(child: CircularProgressIndicator());
+      },
     );
 
     //Tente se cadastrar
     try {
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text, 
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text,
         password: passwordController.text,
       );
       //Finaliza o circulo de carregando
@@ -61,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
         errorMessage = 'Erro: $code';
     }
     showDialog(
-      context: context, 
+      context: context,
       builder: (context) {
         return AlertDialog(
           backgroundColor: Colors.deepPurple,
@@ -76,56 +73,49 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[300],
       body: SafeArea(
-        child:Center(
+        child: Center(
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(height: 50),
-            
+
                 //Logo
-                const Icon(
-                  Icons.lock,
-                  size: 100,
-                ),
-            
+                const Icon(Icons.lock, size: 100),
+
                 const SizedBox(height: 50),
-            
+
                 //Welcome back
                 Text(
                   'Bem vindo de volta, estavamos sentindo sua falta!',
-                  style: TextStyle(
-                    color: Colors.grey[700],
-                    fontSize: 16,
-                  ),
+                  style: TextStyle(color: Colors.grey[700], fontSize: 16),
                 ),
-            
+
                 const SizedBox(height: 25),
-            
+
                 //Username input
                 MyInput(
                   controller: emailController,
                   hintText: "Email",
                   obscureText: false,
                 ),
-            
+
                 const SizedBox(height: 10),
-            
-                //Password input  
+
+                //Password input
                 MyInput(
                   controller: passwordController,
                   hintText: "Senha",
                   obscureText: true,
                 ),
-            
+
                 const SizedBox(height: 10),
-            
+
                 //Forgot password?
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -139,69 +129,59 @@ class _LoginPageState extends State<LoginPage> {
                     ],
                   ),
                 ),
-            
+
                 const SizedBox(height: 25),
-            
+
                 //sign in button
-                MyButton(
-                  onTap: signUserIn,
-                  text: "Cadastre-se",
-                ),
-            
+                MyButton(onTap: signUserIn, text: "Cadastre-se"),
+
                 const SizedBox(height: 50),
-            
+
                 //or continue with
                 Row(
                   children: [
                     Expanded(
-                      child: Divider(
-                        thickness: 0.5,
-                        color: Colors.grey[400],
-                      ),
+                      child: Divider(thickness: 0.5, color: Colors.grey[400]),
                     ),
-            
+
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: Text(
                         'Ou continue com',
                         style: TextStyle(color: Colors.grey[700]),
                       ),
-                      
                     ),
-            
+
                     Expanded(
-                      child: Divider(
-                        thickness: 0.5,
-                        color: Colors.grey[400],
-                      ),
+                      child: Divider(thickness: 0.5, color: Colors.grey[400]),
                     ),
                   ],
                 ),
-            
+
                 const SizedBox(height: 50),
-            
+
                 //google + apple sign in buttons
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    if (Platform.isAndroid) 
-                    // google button
+                    if (Platform.isAndroid)
+                      // google button
                       SquareTile(
                         onTap: () => AuthService().signInWithGoogle(),
-                        imagePath: 'assets/images/google.png'
+                        imagePath: 'assets/images/google.png',
                       ),
 
                     if (Platform.isIOS)
-                    //apple button
+                      //apple button
                       SquareTile(
                         onTap: () {},
-                        imagePath: 'assets/images/apple.png'
+                        imagePath: 'assets/images/apple.png',
                       ),
                   ],
                 ),
-            
+
                 const SizedBox(height: 50),
-            
+
                 //not a member? register now
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -216,17 +196,18 @@ class _LoginPageState extends State<LoginPage> {
                       child: const Text(
                         "Registre-se agora",
                         style: TextStyle(
-                          color: Colors.blue, fontWeight: FontWeight.bold
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                   ],
                 ),
-             ],
+              ],
             ),
           ),
         ),
-      )
+      ),
     );
   }
 }

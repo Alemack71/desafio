@@ -6,7 +6,6 @@ import 'package:desafio/components/navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'home_page.dart';
 import 'package:flutter/services.dart';
 
 const platform = MethodChannel('com.seuapp.ia_channel');
