@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 //Componentes   -----------------------------------------------
 import 'package:desafio/components/my_button.dart';
-import 'package:desafio/components/navigator.dart';
+import 'package:desafio/components/my_header.dart';
 //              -----------------------------------------------
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -29,15 +29,12 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     selectedIndex = widget.selectedIndex;
-    fetchWeather();
-    //Iniciando os valores vazios
   }
 
-  //Controller para outros widgets conseguirem ler o texto escrito pela IA 
+  //Controller para outros widgets conseguirem ler o texto escrito pela IA
   final TextEditingController _responseController = TextEditingController();
 
   //Controller para outros widgets conseguirem ler o texto nos campos AutoComplete
-  
 
   User? get currentUser => FirebaseAuth.instance.currentUser;
 
@@ -59,15 +56,17 @@ class _HomePageState extends State<HomePage> {
     "overcast clouds": "Nuvens nubladas",
   };
 
+  /*
   //Função para abrir menu bar
   void openNavigationRail() {
     showDialog(
       context: context,
       //Se clicar fora fecha
-      barrierDismissible: true, 
+      barrierDismissible: true,
       builder: (context) => MyNavigator(selectedIndex: selectedIndex),
     );
   }
+  */
 
   //Função para deslogar usuário
   void signUserOut() async {
@@ -81,38 +80,40 @@ class _HomePageState extends State<HomePage> {
 
   //Método para buscar previsão do tempo
   Future<void> fetchWeather() async {
-  try {
-    Position position = await _determinedPosition();
-    print("Localização: ${position.latitude}, ${position.longitude}");
+    try {
+      Position position = await _determinedPosition();
+      print("Localização: ${position.latitude}, ${position.longitude}");
 
-    String weatherApiUrl =
-        "https://api.openweathermap.org/data/2.5/forecast?lat=${position.latitude}&lon=${position.longitude}&units=metric&appid=e9dc3c8401ef772f695ab64982122465";
+      String weatherApiUrl =
+          "https://api.openweathermap.org/data/2.5/forecast?lat=${position.latitude}&lon=${position.longitude}&units=metric&appid=e9dc3c8401ef772f695ab64982122465";
 
-    final response = await http.get(Uri.parse(weatherApiUrl));
+      final response = await http.get(Uri.parse(weatherApiUrl));
 
-    print("Status Code: ${response.statusCode}");
-    print("Resposta: ${response.body}");
+      print("Status Code: ${response.statusCode}");
+      print("Resposta: ${response.body}");
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      String description = data['list'][0]['weather'][0]['description'];
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        String description = data['list'][0]['weather'][0]['description'];
 
-      // Traduzindo se houver uma correspondência
-      String translatedDescription = weatherTranslations[description] ?? description;
+        // Traduzindo se houver uma correspondência
+        String translatedDescription =
+            weatherTranslations[description] ?? description;
 
-      setState(() {
-        temperature = "${data['list'][0]['main']['temp'].toStringAsFixed(1)}°C";
-        weatherDescription = translatedDescription;
-      });
-    } else {
-      setState(() {
-        temperature = "Erro ao carregar";
-        weatherDescription = "Tente novamente";
-      });
-    }
-  } catch (e) {
-    if (!mounted) return;
-    
+        setState(() {
+          temperature =
+              "${data['list'][0]['main']['temp'].toStringAsFixed(1)}°C";
+          weatherDescription = translatedDescription;
+        });
+      } else {
+        setState(() {
+          temperature = "Erro ao carregar";
+          weatherDescription = "Tente novamente";
+        });
+      }
+    } catch (e) {
+      if (!mounted) return;
+
       setState(() {
         temperature = "Erro";
         weatherDescription = "Sem conexão";
@@ -141,7 +142,9 @@ class _HomePageState extends State<HomePage> {
     }
 
     if (permission == LocationPermission.deniedForever) {
-      throw Exception('Permissão negada permanentemente, vá até as configurações');
+      throw Exception(
+        'Permissão negada permanentemente, vá até as configurações',
+      );
     }
 
     return await Geolocator.getCurrentPosition();
@@ -181,26 +184,20 @@ class _HomePageState extends State<HomePage> {
       showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => const Center(
-          child: CircularProgressIndicator(),
-        ),
+        builder: (context) => const Center(child: CircularProgressIndicator()),
       );
 
       final response = await http.post(
         Uri.parse(apiRequestUrl),
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: {"Content-Type": "application/json"},
         body: jsonEncode({
           "contents": [
             {
               "parts": [
-                {
-                  "text": question
-                }
-              ]
-            }
-          ]
+                {"text": question},
+              ],
+            },
+          ],
         }),
       );
 
@@ -210,7 +207,8 @@ class _HomePageState extends State<HomePage> {
         var jsonResponse = jsonDecode(response.body);
 
         setState(() {
-          apiResponse = jsonResponse["candidates"][0]["content"]["parts"][0]["text"] ??
+          apiResponse =
+              jsonResponse["candidates"][0]["content"]["parts"][0]["text"] ??
               "Nenhuma resposta recebida.";
           _responseController.text = apiResponse;
         });
@@ -247,45 +245,11 @@ class _HomePageState extends State<HomePage> {
   //=======================Aqui separa backend do frontend=======================================================
   //=======================Aqui separa backend do frontend=======================================================
 
-   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[300],
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Text(
-                  "$temperature - $weatherDescription",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                  ),
-                )
-              ],
-            )
-          ],
-        ),
-        actions: [
-            IconButton(
-              onPressed: signUserOut, 
-              icon: Icon(
-                Icons.logout,
-                color: Colors.white,
-              ),
-            ),
-            IconButton(
-              onPressed: openNavigationRail,
-              icon: Icon(
-                Icons.menu,
-                color: Colors.white,
-              ),
-          ),
-        ],
-      ),
+      appBar: MyHeader(selectedIndex: 0),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -301,13 +265,9 @@ class _HomePageState extends State<HomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(
-                  child: buildBrandAutocomplete(1),
-                ),
+                Expanded(child: buildBrandAutocomplete(1)),
                 const SizedBox(width: 20), //Espaço entre os dois
-                Expanded(
-                  child: buildBrandAutocomplete(2),
-                ),
+                Expanded(child: buildBrandAutocomplete(2)),
               ],
             ),
             const SizedBox(height: 20),
@@ -315,70 +275,67 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  child: selectedBrand1 != null
-                    ? buildModelAutocomplete(1)
-                    : const SizedBox(), //Espaço reservado
+                  child:
+                      selectedBrand1 != null
+                          ? buildModelAutocomplete(1)
+                          : const SizedBox(), //Espaço reservado
                 ),
                 const SizedBox(width: 20), //Espaço entre os dois
                 Expanded(
-                  child: selectedBrand2 != null
-                    ? buildModelAutocomplete(2)
-                    : const SizedBox(), //Espaço reservado 
-                )
+                  child:
+                      selectedBrand2 != null
+                          ? buildModelAutocomplete(2)
+                          : const SizedBox(), //Espaço reservado
+                ),
               ],
             ),
             const SizedBox(height: 20),
-            if (selectedModel1 != null && 
+            if (selectedModel1 != null &&
                 selectedModel2 != null &&
-                carBrands[selectedBrand1]?.contains(_modelController1.text.trim()) == true &&
-                carBrands[selectedBrand2]?.contains(_modelController2.text.trim()) == true)
+                carBrands[selectedBrand1]?.contains(
+                      _modelController1.text.trim(),
+                    ) ==
+                    true &&
+                carBrands[selectedBrand2]?.contains(
+                      _modelController2.text.trim(),
+                    ) ==
+                    true)
               Center(
                 child: Row(
                   children: [
                     Expanded(
                       child: Center(
-                        child: MyButton(
-                          onTap: sendData,
-                          text: "Comparar",
-                        ),
-                      )
-                    ),
-                    
-                    ElevatedButton.icon(
-                      onPressed:_clearText, 
-                      label: Icon(
-                        Icons.delete,
-                        size: 30,
+                        child: MyButton(onTap: sendData, text: "Comparar"),
                       ),
+                    ),
+
+                    ElevatedButton.icon(
+                      onPressed: _clearText,
+                      label: Icon(Icons.delete, size: 30),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey[400], // Cor de fundo
                         foregroundColor: Colors.black, // Cor do ícone
                         minimumSize: Size(50, 70),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8), // Borda arredondada
+                          borderRadius: BorderRadius.circular(
+                            8,
+                          ), // Borda arredondada
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
-              
 
             const SizedBox(height: 20),
             SizedBox(height: 20),
 
-             
             Expanded(
               child: SingleChildScrollView(
                 //Usar TextField ao invés de Text para a resposta da Ia para conseguir usar controller para conseguir limpar o texto
-                child: Text(
-                  apiResponse,
-                  style: TextStyle(fontSize: 14),
-                )
+                child: Text(apiResponse, style: TextStyle(fontSize: 14)),
               ),
             ),
-
-           
           ],
         ),
       ),
@@ -396,7 +353,9 @@ class _HomePageState extends State<HomePage> {
             return brands;
           }
           return brands.where((String brand) {
-            return brand.toLowerCase().contains(textEditingValue.text.toLowerCase());
+            return brand.toLowerCase().contains(
+              textEditingValue.text.toLowerCase(),
+            );
           }).toList();
         },
         onSelected: (String selection) {
@@ -410,7 +369,12 @@ class _HomePageState extends State<HomePage> {
             }
           });
         },
-        fieldViewBuilder: (context, textEditingController,  focusNode, onFieldSubmitted) {
+        fieldViewBuilder: (
+          context,
+          textEditingController,
+          focusNode,
+          onFieldSubmitted,
+        ) {
           // Armazene o controller para poder limpar depois
           if (index == 1) {
             _brandController1 = textEditingController;
@@ -419,7 +383,7 @@ class _HomePageState extends State<HomePage> {
           }
 
           return TextField(
-            controller:  textEditingController,
+            controller: textEditingController,
             focusNode: focusNode,
             decoration: const InputDecoration(
               hintText: 'Marca',
@@ -432,7 +396,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget buildModelAutocomplete(int index) {
-    List<String> models = carBrands[index == 1 ? selectedBrand1 ?? "" : selectedBrand2 ?? ""] ?? [];
+    List<String> models =
+        carBrands[index == 1 ? selectedBrand1 ?? "" : selectedBrand2 ?? ""] ??
+        [];
 
     return SizedBox(
       width: 150,
@@ -442,7 +408,9 @@ class _HomePageState extends State<HomePage> {
             return models;
           }
           return models.where((String model) {
-            return model.toLowerCase().contains(textEditingValue.text.toLowerCase());
+            return model.toLowerCase().contains(
+              textEditingValue.text.toLowerCase(),
+            );
           }).toList();
         },
         onSelected: (String selection) {
@@ -454,7 +422,12 @@ class _HomePageState extends State<HomePage> {
             }
           });
         },
-        fieldViewBuilder: (context, textEditingController, focusNode, onFieldSubmitted) {
+        fieldViewBuilder: (
+          context,
+          textEditingController,
+          focusNode,
+          onFieldSubmitted,
+        ) {
           if (index == 1) {
             _modelController1 = textEditingController;
           } else {
