@@ -10,16 +10,16 @@ import 'package:flutter/services.dart';
 
 const platform = MethodChannel('com.seuapp.ia_channel');
 
-class CarSelectionScreen extends StatefulWidget {
+class ChatbotPage extends StatefulWidget {
   final int selectedIndex;
 
-  const CarSelectionScreen({super.key, this.selectedIndex = 1});
+  const ChatbotPage({super.key, this.selectedIndex = 1});
 
   @override
-  State<CarSelectionScreen> createState() => _CarSelectionScreenState();
+  State<ChatbotPage> createState() => _ChatbotPageState();
 }
 
-class _CarSelectionScreenState extends State<CarSelectionScreen> {
+class _ChatbotPageState extends State<ChatbotPage> {
   late int selectedIndex = 0;
 
   @override

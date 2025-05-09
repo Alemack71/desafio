@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../pages/home_page.dart';
-import '../pages/car_selection_page.dart';
+import '../pages/chatbot_page.dart';
 
 class MyNavigator extends StatelessWidget {
   final int selectedIndex;
@@ -25,7 +25,7 @@ class MyNavigator extends StatelessWidget {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => const CarSelectionScreen(selectedIndex: 1),
+          builder: (context) => const ChatbotPage(selectedIndex: 1),
         ),
       );
     }
