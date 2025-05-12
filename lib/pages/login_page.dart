@@ -4,7 +4,9 @@ import 'package:desafio/services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:desafio/components/my_input.dart';
+import 'home_page.dart';
 import 'dart:io';
+import '../routers/routes.dart';
 
 class LoginPage extends StatefulWidget {
   final Function()? onTap;
@@ -20,15 +22,21 @@ class _LoginPageState extends State<LoginPage> {
 
   final passwordController = TextEditingController();
 
-  //Sign user in method
-  void signUserIn() async {
-    //Mostrando carregando
+  bool loading = false;
+
+  void _showDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) {
         return const Center(child: CircularProgressIndicator());
       },
     );
+  }
+
+  //Sign user in method
+  void signUserIn() async {
+    //Mostrando carregando
+    _showDialog(context);
 
     //Tente se cadastrar
     try {
@@ -36,8 +44,7 @@ class _LoginPageState extends State<LoginPage> {
         email: emailController.text,
         password: passwordController.text,
       );
-      //Finaliza o circulo de carregando
-      Navigator.pop(context);
+      Navigator.pushReplacementNamed(context, MyRoutes.carselection);
     } on FirebaseAuthException catch (e) {
       //Finaliza o circulo de carregando
       Navigator.pop(context);

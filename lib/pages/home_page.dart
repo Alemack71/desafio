@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:geolocator/geolocator.dart';
 import 'auth_page.dart';
+import '../routers/routes.dart';
 
 class HomePage extends StatefulWidget {
   final int selectedIndex;
@@ -71,11 +72,7 @@ class _HomePageState extends State<HomePage> {
   //Função para deslogar usuário
   void signUserOut() async {
     await FirebaseAuth.instance.signOut();
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const AuthPage()),
-      (route) => false,
-    );
+    Navigator.pushReplacementNamed(context, MyRoutes.carselection);
   }
 
   //Método para buscar previsão do tempo
