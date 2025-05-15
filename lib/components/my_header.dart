@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:desafio/components/navigator.dart';
 //              -----------------------------------------------
 import 'package:flutter/material.dart';
-import '../pages/auth_page.dart';
+import '../routers/routes.dart';
 
 class MyHeader extends StatefulWidget implements PreferredSizeWidget {
   final int selectedIndex;
@@ -46,11 +46,7 @@ class _MyHeaderState extends State<MyHeader> {
   //Função para deslogar usuário
   void signUserOut() async {
     await FirebaseAuth.instance.signOut();
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const AuthPage()),
-      (route) => false,
-    );
+    Navigator.pushReplacementNamed(context, MyRoutes.home);
   }
 
   //Função para abrir menu bar
@@ -66,6 +62,7 @@ class _MyHeaderState extends State<MyHeader> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      automaticallyImplyLeading: false, //Define se aparece botão de voltar que é padrão do flutter quando navega para uma nova tela
       backgroundColor: Colors.black,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

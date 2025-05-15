@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:desafio/components/my_input.dart';
 import 'dart:io';
+import '../routers/routes.dart';
 
 class RegisterPage extends StatefulWidget {
   final Function()? onTap;
@@ -20,21 +21,25 @@ class _RegisterPageState extends State<RegisterPage> {
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
+  void _showDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const Center(child: CircularProgressIndicator());
+      },
+    );
+  }
+
   //Sign user up method
   void signUserUp() async {
+    //Armazenando o context em uma variável para evitar que meu context se torna inválido se o widget for desmontado durante o await
+    final currentContext = context;
 
     //Mostrando carregando
-    showDialog(
-      context: context, 
-      builder: (context) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      }
-    );
+    _showDialog(currentContext);
     
     if (passwordController.text != confirmPasswordController.text) {
-      Navigator.pop(context);
+      Navigator.pop(currentContext);
       //Mostra mensagem de erro, senha não bate
       showErrorMessage("Senhas não estão iguais");
       return;
@@ -49,13 +54,17 @@ class _RegisterPageState extends State<RegisterPage> {
         password: passwordController.text,
       );
       } 
-      //Finaliza o circulo de carregando
-      Navigator.pop(context);
+      if (currentContext.mounted) {
+        Navigator.pop(currentContext); // Fecha o loading
+        Navigator.pushReplacementNamed(currentContext, MyRoutes.carselection);
+      }
     } on FirebaseAuthException catch (e) {
-      //Finaliza o circulo de carregando
-      Navigator.pop(context);
-      //Mosta mensagem de erro
-      showErrorMessage(e.code);
+      if (currentContext.mounted) {
+        //Finaliza o circulo de carregando
+        Navigator.pop(currentContext);
+        //Mosta mensagem de erro
+        showErrorMessage(e.code);
+      }
     }
   }
 

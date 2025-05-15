@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import '../pages/home_page.dart';
-import '../pages/chatbot_page.dart';
 import '../routers/routes.dart';
 
 class MyNavigator extends StatelessWidget {

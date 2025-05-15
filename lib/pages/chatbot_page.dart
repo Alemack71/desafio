@@ -120,6 +120,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.grey[300], 
       appBar: AppBar(
+        automaticallyImplyLeading: false, //Define se aparece botão de voltar que é padrão do flutter quando navega para uma nova tela
         backgroundColor: Colors.black,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

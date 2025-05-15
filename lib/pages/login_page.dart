@@ -4,7 +4,6 @@ import 'package:desafio/services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:desafio/components/my_input.dart';
-import 'home_page.dart';
 import 'dart:io';
 import '../routers/routes.dart';
 
@@ -35,8 +34,11 @@ class _LoginPageState extends State<LoginPage> {
 
   //Sign user in method
   void signUserIn() async {
+    //Armazenando o context em uma variável para evitar que meu context se torna inválido se o widget for desmontado durante o await
+    final currentContext = context;
+
     //Mostrando carregando
-    _showDialog(context);
+    _showDialog(currentContext);
 
     //Tente se cadastrar
     try {
@@ -44,12 +46,19 @@ class _LoginPageState extends State<LoginPage> {
         email: emailController.text,
         password: passwordController.text,
       );
-      Navigator.pushReplacementNamed(context, MyRoutes.carselection);
+
+      //Usando pushReplacementNamed com o context correto
+      if (currentContext.mounted) {
+        
+        Navigator.pushReplacementNamed(currentContext, MyRoutes.carselection);
+      }
     } on FirebaseAuthException catch (e) {
-      //Finaliza o circulo de carregando
-      Navigator.pop(context);
-      //Mosta mensagem de erro
-      showErrorMessage(e.code);
+      //Finaliza o circulo de carregando se o widget ainda estiver montado
+      if (currentContext.mounted) {
+        Navigator.pop(currentContext);
+        //Mosta mensagem de erro
+        showErrorMessage(e.code);
+      }
     }
   }
 
