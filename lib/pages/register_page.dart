@@ -32,12 +32,13 @@ class _RegisterPageState extends State<RegisterPage> {
 
   //Sign user up method
   void signUserUp() async {
+
     //Armazenando o context em uma variável para evitar que meu context se torna inválido se o widget for desmontado durante o await
     final currentContext = context;
 
     //Mostrando carregando
     _showDialog(currentContext);
-    
+
     if (passwordController.text != confirmPasswordController.text) {
       Navigator.pop(currentContext);
       //Mostra mensagem de erro, senha não bate
@@ -50,6 +51,7 @@ class _RegisterPageState extends State<RegisterPage> {
       //Checa se a senha está confirmada
       if (passwordController.text == confirmPasswordController.text) {
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
+
         email: emailController.text, 
         password: passwordController.text,
       );
@@ -58,6 +60,7 @@ class _RegisterPageState extends State<RegisterPage> {
         Navigator.pop(currentContext); // Fecha o loading
         Navigator.pushReplacementNamed(currentContext, MyRoutes.carselection);
       }
+
     } on FirebaseAuthException catch (e) {
       if (currentContext.mounted) {
         //Finaliza o circulo de carregando
@@ -70,70 +73,59 @@ class _RegisterPageState extends State<RegisterPage> {
 
   //Popup de credencial incorreta
   void showErrorMessage(String message) {
-
     //Traduzindo mensagem de email em uso
     if (message == 'email-already-in-use') {
       message = "email já em uso.";
     }
 
     showDialog(
-      context: context, 
+      context: context,
       builder: (context) {
         return AlertDialog(
           backgroundColor: Colors.deepPurple,
           title: Center(
-            child: Text(
-              message,
-              style: const TextStyle(color: Colors.white),
-            ),
+            child: Text(message, style: const TextStyle(color: Colors.white)),
           ),
         );
       },
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[300],
       body: SafeArea(
-        child:Center(
+        child: Center(
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(height: 50),
-            
+
                 //Logo
-                const Icon(
-                  Icons.lock,
-                  size: 65,
-                ),
-            
+                const Icon(Icons.lock, size: 65),
+
                 const SizedBox(height: 50),
-            
+
                 //Welcome back
                 Text(
                   'Vamos criar uma conta para você!',
-                  style: TextStyle(
-                    color: Colors.grey[700],
-                    fontSize: 16,
-                  ),
+                  style: TextStyle(color: Colors.grey[700], fontSize: 16),
                 ),
-            
+
                 const SizedBox(height: 25),
-            
+
                 //Campo de usuário
                 MyInput(
                   controller: emailController,
                   hintText: "Email",
                   obscureText: false,
                 ),
-            
+
                 const SizedBox(height: 10),
-            
-                //Campo de senha  
+
+                //Campo de senha
                 MyInput(
                   controller: passwordController,
                   hintText: "Senha",
@@ -148,69 +140,59 @@ class _RegisterPageState extends State<RegisterPage> {
                   hintText: "Confirmar senha",
                   obscureText: true,
                 ),
-            
+
                 const SizedBox(height: 25),
-            
+
                 //sign in button
-                MyButton(
-                  onTap: signUserUp,
-                  text: "Registre-se",
-                ),
-            
+                MyButton(onTap: signUserUp, text: "Registre-se"),
+
                 const SizedBox(height: 50),
-            
+
                 //or continue with
                 Row(
                   children: [
                     Expanded(
-                      child: Divider(
-                        thickness: 0.5,
-                        color: Colors.grey[400],
-                      ),
+                      child: Divider(thickness: 0.5, color: Colors.grey[400]),
                     ),
-            
+
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: Text(
                         'Ou continue com',
                         style: TextStyle(color: Colors.grey[700]),
                       ),
-                      
                     ),
-            
+
                     Expanded(
-                      child: Divider(
-                        thickness: 0.5,
-                        color: Colors.grey[400],
-                      ),
+                      child: Divider(thickness: 0.5, color: Colors.grey[400]),
                     ),
                   ],
                 ),
-            
+
                 const SizedBox(height: 50),
-            
+
                 //google + apple sign in buttons
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    if (Platform.isAndroid) 
+                    if (Platform.isAndroid)
                       // google button
                       SquareTile(
                         onTap: () => AuthService().signInWithGoogle(),
-                        imagePath: 'assets/images/google.png'
+                        imagePath: 'assets/images/google.png',
                       ),
 
                     if (Platform.isIOS)
                       //apple button
                       SquareTile(
                         onTap: () {},
-                        imagePath: 'assets/images/apple.png'
+                        imagePath: 'assets/images/apple.png',
                       ),
                   ],
                 ),
-            
+
                 const SizedBox(height: 50),
-            
+
                 //not a member? register now
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -225,17 +207,18 @@ class _RegisterPageState extends State<RegisterPage> {
                       child: const Text(
                         "Cadastre-se agora",
                         style: TextStyle(
-                          color: Colors.blue, fontWeight: FontWeight.bold
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                   ],
-                )
+                ),
               ],
             ),
           ),
         ),
-      )
+      ),
     );
   }
 }

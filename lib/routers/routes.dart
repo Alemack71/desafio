@@ -4,7 +4,6 @@ import 'package:desafio/pages/login_page.dart';
 import 'package:desafio/pages/chatbot_page.dart';
 import 'package:desafio/pages/register_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class MyRoutes {
   static const String home = '/';
@@ -31,7 +30,7 @@ class MyRoutes {
       case chatbot:
         return MaterialPageRoute(builder: (_) => const ChatbotPage());
       default:
-        return MaterialPageRoute(builder: (_) => const HomePage());
+        return MaterialPageRoute(builder: (_) => const AuthPage());
     }
   }
 }
