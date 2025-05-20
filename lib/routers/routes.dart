@@ -18,13 +18,9 @@ class MyRoutes {
       case home:
         return MaterialPageRoute(builder: (_) => const AuthPage());
       case login:
-        var args = settings.arguments as Map<String, dynamic>;
-        var onTap = args["onTap"];
-        return MaterialPageRoute(builder: (_) => LoginPage(onTap: onTap));
+        return MaterialPageRoute(builder: (_) => LoginPage());
       case register:
-        var args = settings.arguments as Map<String, dynamic>;
-        var onTap = args["onTap"];
-        return MaterialPageRoute(builder: (_) => RegisterPage(onTap: onTap));
+        return MaterialPageRoute(builder: (_) => RegisterPage());
       case carselection:
         return MaterialPageRoute(builder: (_) => const HomePage());
       case chatbot:

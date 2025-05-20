@@ -8,8 +8,7 @@ import 'dart:io';
 import '../routers/routes.dart';
 
 class RegisterPage extends StatefulWidget {
-  final Function()? onTap;
-  const RegisterPage({super.key, required this.onTap});
+  const RegisterPage({super.key});
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -51,11 +50,10 @@ class _RegisterPageState extends State<RegisterPage> {
       //Checa se a senha está confirmada
       if (passwordController.text == confirmPasswordController.text) {
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
-
-        email: emailController.text, 
-        password: passwordController.text,
-      );
-      } 
+          email: emailController.text,
+          password: passwordController.text,
+        );
+      }
       if (currentContext.mounted) {
         Navigator.pop(currentContext); // Fecha o loading
         Navigator.pushReplacementNamed(currentContext, MyRoutes.carselection);
@@ -144,8 +142,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 const SizedBox(height: 25),
 
                 //sign in button
-                MyButton(onTap: signUserUp, text: "Registre-se"),
-
+                MyButton(onTap: signUserUp, text: "Cadastre-se"),
                 const SizedBox(height: 50),
 
                 //or continue with
@@ -203,9 +200,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     const SizedBox(width: 4),
                     GestureDetector(
-                      onTap: widget.onTap,
+                      onTap: () => Navigator.pushReplacementNamed(context, MyRoutes.login),
                       child: const Text(
-                        "Cadastre-se agora",
+                        "Entrar",
                         style: TextStyle(
                           color: Colors.blue,
                           fontWeight: FontWeight.bold,
