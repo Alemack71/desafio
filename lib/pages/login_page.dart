@@ -8,8 +8,7 @@ import 'dart:io';
 import '../routers/routes.dart';
 
 class LoginPage extends StatefulWidget {
-  final Function()? onTap;
-  const LoginPage({super.key, required this.onTap});
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -49,7 +48,6 @@ class _LoginPageState extends State<LoginPage> {
 
       //Usando pushReplacementNamed com o context correto
       if (currentContext.mounted) {
-        
         Navigator.pushReplacementNamed(currentContext, MyRoutes.carselection);
       }
     } on FirebaseAuthException catch (e) {
@@ -149,7 +147,7 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 25),
 
                 //sign in button
-                MyButton(onTap: signUserIn, text: "Cadastre-se"),
+                MyButton(onTap: signUserIn, text: "Entrar"),
 
                 const SizedBox(height: 50),
 
@@ -208,9 +206,9 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(width: 4),
                     GestureDetector(
-                      onTap: widget.onTap,
+                      onTap: () => Navigator.pushReplacementNamed(context, MyRoutes.register),
                       child: const Text(
-                        "Registre-se agora",
+                        "Cadastre-se agora",
                         style: TextStyle(
                           color: Colors.blue,
                           fontWeight: FontWeight.bold,
