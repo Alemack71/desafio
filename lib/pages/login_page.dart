@@ -25,13 +25,14 @@ class _LoginPageState extends State<LoginPage> {
   void _showDialog(BuildContext context) {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (context) {
         return const Center(child: CircularProgressIndicator());
       },
     );
   }
 
-  //Sign user in method
+  //Entrar pelo firebase
   void signUserIn() async {
     //Armazenando o context em uma variável para evitar que meu context se torna inválido se o widget for desmontado durante o await
     final currentContext = context;
@@ -56,6 +57,31 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.pop(currentContext);
         //Mosta mensagem de erro
         showErrorMessage(e.code);
+      }
+    }
+  }
+
+  //Entrar pela conta google
+  void _signInWithGoogle() async {
+    //Armazenando o context em uma variável para evitar que meu context se torna inválido se o widget for desmontado durante o await
+    final currentContext = context;
+
+    //Mostrando carregando
+    _showDialog(currentContext);
+
+    //Tente se cadastrar
+    try {
+      await AuthService().signInWithGoogle();
+
+      if (currentContext.mounted) {
+        Navigator.pop(currentContext);
+        Navigator.pushReplacementNamed(currentContext, MyRoutes.carselection);
+      }
+    } catch (e) {
+      if (currentContext.mounted) {
+        Navigator.pop(currentContext); //Fecha o loading
+        //Mostra mensagem de erro
+        showErrorMessage(e.toString());
       }
     }
   }
@@ -181,7 +207,7 @@ class _LoginPageState extends State<LoginPage> {
                     if (Platform.isAndroid)
                       // google button
                       SquareTile(
-                        onTap: () => AuthService().signInWithGoogle(),
+                        onTap: _signInWithGoogle,
                         imagePath: 'assets/images/google.png',
                       ),
 
@@ -206,7 +232,11 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(width: 4),
                     GestureDetector(
-                      onTap: () => Navigator.pushReplacementNamed(context, MyRoutes.register),
+                      onTap:
+                          () => Navigator.pushReplacementNamed(
+                            context,
+                            MyRoutes.register,
+                          ),
                       child: const Text(
                         "Cadastre-se agora",
                         style: TextStyle(
