@@ -49,6 +49,7 @@ class _LoginPageState extends State<LoginPage> {
 
       //Usando pushReplacementNamed com o context correto
       if (currentContext.mounted) {
+        Navigator.pop(currentContext); // Fecha o loading
         Navigator.pushReplacementNamed(currentContext, MyRoutes.carselection);
       }
     } on FirebaseAuthException catch (e) {
@@ -74,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
       await AuthService().signInWithGoogle();
 
       if (currentContext.mounted) {
-        Navigator.pop(currentContext);
+        Navigator.pop(currentContext); // Fecha o loading
         Navigator.pushReplacementNamed(currentContext, MyRoutes.carselection);
       }
     } catch (e) {

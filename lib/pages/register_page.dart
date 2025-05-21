@@ -67,6 +67,31 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
+  //Entrar pela conta google
+  void _signInWithGoogle() async {
+    //Armazenando o context em uma variável para evitar que meu context se torna inválido se o widget for desmontado durante o await
+    final currentContext = context;
+
+    //Mostrando carregando
+    _showDialog(currentContext);
+
+    //Tente se cadastrar
+    try {
+      await AuthService().signInWithGoogle();
+
+      if (currentContext.mounted) {
+        Navigator.pop(currentContext);
+        Navigator.pushReplacementNamed(currentContext, MyRoutes.carselection);
+      }
+    } catch (e) {
+      if (currentContext.mounted) {
+        Navigator.pop(currentContext); //Fecha o loading
+        //Mostra mensagem de erro
+        showErrorMessage(e.toString());
+      }
+    }
+  }
+
   //Popup de credencial incorreta
   void showErrorMessage(String message) {
     //Traduzindo mensagem de email em uso
@@ -174,7 +199,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     if (Platform.isAndroid)
                       // google button
                       SquareTile(
-                        onTap: () => AuthService().signInWithGoogle(),
+                        onTap: _signInWithGoogle,
                         imagePath: 'assets/images/google.png',
                       ),
 
@@ -199,7 +224,11 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     const SizedBox(width: 4),
                     GestureDetector(
-                      onTap: () => Navigator.pushReplacementNamed(context, MyRoutes.login),
+                      onTap:
+                          () => Navigator.pushReplacementNamed(
+                            context,
+                            MyRoutes.login,
+                          ),
                       child: const Text(
                         "Entrar",
                         style: TextStyle(
