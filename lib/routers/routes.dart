@@ -3,6 +3,7 @@ import 'package:desafio/pages/home_page.dart';
 import 'package:desafio/pages/login_page.dart';
 import 'package:desafio/pages/chatbot_page.dart';
 import 'package:desafio/pages/register_page.dart';
+import 'package:desafio/pages/reset_password.dart';
 import 'package:flutter/material.dart';
 
 class MyRoutes {
@@ -12,6 +13,7 @@ class MyRoutes {
   static const String register = '/register';
   static const String chatbot = '/chatbot';
   static const String carselection = '/carselection';
+  static const String resetpassword = '/resetpassword';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -21,6 +23,8 @@ class MyRoutes {
         return MaterialPageRoute(builder: (_) => LoginPage());
       case register:
         return MaterialPageRoute(builder: (_) => RegisterPage());
+      case resetpassword:
+        return MaterialPageRoute(builder: (_) => ResetPassword());
       case carselection:
         return MaterialPageRoute(builder: (_) => const HomePage());
       case chatbot:
