@@ -163,9 +163,16 @@ class _LoginPageState extends State<LoginPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Text(
-                        'Esqueceu a senha?',
-                        style: TextStyle(color: Colors.grey[600]),
+                      GestureDetector(
+                        onTap:
+                            () => Navigator.pushReplacementNamed(
+                              context,
+                              MyRoutes.resetpassword,
+                            ),
+                        child: Text(
+                          "Esqueceu a senha?",
+                          style: TextStyle(color: Colors.grey[600]),
+                        ),
                       ),
                     ],
                   ),
