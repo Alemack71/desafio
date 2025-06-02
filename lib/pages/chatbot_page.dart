@@ -22,6 +22,9 @@ class ChatbotPage extends StatefulWidget {
 class _ChatbotPageState extends State<ChatbotPage> {
   late int selectedIndex = 0;
 
+  //Variável para controlar CircularProgression do MyButton
+  bool isLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -42,7 +45,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
     showDialog(
       context: context,
       //Se clicar fora fecha
-      barrierDismissible: true, 
+      barrierDismissible: true,
       builder: (context) => MyNavigator(selectedIndex: selectedIndex),
     );
   }
@@ -56,61 +59,43 @@ class _ChatbotPageState extends State<ChatbotPage> {
 
   //Método para enviar pergunta e receber resposta
   Future<void> sendQuestion() async {
-    try {
-      // Mostrando carregando
-      showDialog(
-        context: context,
-        barrierDismissible: false, // impede o usuário de fechar o dialog clicando fora
-        builder: (context) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        },
-      );
+    //Ativando o loading com setState
+    setState(() => isLoading = true);
 
+    try {
       final response = await http.post(
         Uri.parse(apiRequestUrl),
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: {"Content-Type": "application/json"},
         body: jsonEncode({
           "contents": [
             {
               "parts": [
-                {
-                  "text": _controller.text
-                }
-              ]
-            }
-          ]
+                {"text": _controller.text},
+              ],
+            },
+          ],
         }),
       );
 
-      // Fechando o carregando
-      Navigator.pop(context);
-
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
-        String apiResponse = jsonResponse["candidates"][0]["content"]["parts"][0]
-          ["text"] ??
-              "Nenhuma resposta recebida.";
+        String apiResponse =
+            jsonResponse["candidates"][0]["content"]["parts"][0]["text"] ??
+            "Nenhuma resposta recebida.";
 
-        Navigator.pushNamed(
-          context,
-          '/ia_response',
-          arguments: apiResponse,
-        );
+        Navigator.pushNamed(context, '/ia_response', arguments: apiResponse);
       } else {
         setState(() {
           apiResponse = "Erro ao carregar dados: ${response.statusCode}";
         });
       }
     } catch (e) {
-      // garante que o carregando some mesmo em caso de erro
-      Navigator.pop(context); 
       setState(() {
         apiResponse = "Erro: $e";
       });
+    } finally {
+      //Ativando o loading com setState
+      setState(() => isLoading = false);
     }
   }
 
@@ -118,9 +103,10 @@ class _ChatbotPageState extends State<ChatbotPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: Colors.grey[300], 
+      backgroundColor: Colors.grey[300],
       appBar: AppBar(
-        automaticallyImplyLeading: false, //Define se aparece botão de voltar que é padrão do flutter quando navega para uma nova tela
+        automaticallyImplyLeading:
+            false, //Define se aparece botão de voltar que é padrão do flutter quando navega para uma nova tela
         backgroundColor: Colors.black,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -129,22 +115,16 @@ class _ChatbotPageState extends State<ChatbotPage> {
               children: [
                 Text(
                   "Chatbot",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                  ),
-                )
+                  style: TextStyle(color: Colors.white, fontSize: 18),
+                ),
               ],
-            )
+            ),
           ],
         ),
         actions: [
-            IconButton(
-              onPressed: openNavigationRail,
-              icon: Icon(
-                Icons.menu,
-                color: Colors.white,
-              ),
+          IconButton(
+            onPressed: openNavigationRail,
+            icon: Icon(Icons.menu, color: Colors.white),
           ),
         ],
       ),
@@ -174,40 +154,31 @@ class _ChatbotPageState extends State<ChatbotPage> {
                   suffixIcon: IconButton(
                     icon: Icon(Icons.delete),
                     onPressed: _clearText,
-                  )
+                  ),
                 ),
               ),
 
               SizedBox(height: 10),
 
-              //Botão para mandar texto 
-
+              //Botão para mandar texto
               MyButton(
-                  onTap: () {
-                    if(_controller.text.isNotEmpty) {
-                      sendQuestion();
-                    }
-                  },
-                  text: "Perguntar",
-                ),  
-              
-                
-              const SizedBox(height: 20),
-              Center(
-                child: Text(
-                  "Bem vindo ${currentUser?.email ?? ""}!"
-                ),
+                onTap: () {
+                  if (_controller.text.isNotEmpty) {
+                    sendQuestion();
+                  }
+                },
+                text: "Perguntar",
+                isLoading: isLoading,
               ),
-                SingleChildScrollView(
-                  child: Text(
-                    apiResponse,
-                    style: TextStyle(fontSize: 14),
-                  ),
-                ),
-                    
+
+              const SizedBox(height: 20),
+              Center(child: Text("Bem vindo ${currentUser?.email ?? ""}!")),
+              SingleChildScrollView(
+                child: Text(apiResponse, style: TextStyle(fontSize: 14)),
+              ),
             ],
           ),
-        )
+        ),
       ),
     );
   }
