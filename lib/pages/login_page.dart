@@ -20,7 +20,9 @@ class _LoginPageState extends State<LoginPage> {
 
   final passwordController = TextEditingController();
 
-  bool loading = false;
+  //Variável para controlar CircularProgression do MyButton e SquareTile
+  bool isLoading = false;
+  bool isLoadingSquare = false;
 
   void _showDialog(BuildContext context) {
     showDialog(
@@ -33,57 +35,31 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   //Entrar pelo firebase
-  void signUserIn() async {
-    //Armazenando o context em uma variável para evitar que meu context se torna inválido se o widget for desmontado durante o await
-    final currentContext = context;
-
-    //Mostrando carregando
-    _showDialog(currentContext);
-
+  void signUserIn(BuildContext context) async {
+    //Ativando o loading com setState
+    setState(() => isLoading = true);
+  
     //Tente se cadastrar
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       );
-
-      //Usando pushReplacementNamed com o context correto
-      if (currentContext.mounted) {
-        Navigator.pop(currentContext); // Fecha o loading
-        Navigator.pushReplacementNamed(currentContext, MyRoutes.carselection);
-      }
+      Navigator.pushReplacementNamed(context, MyRoutes.carselection);
     } on FirebaseAuthException catch (e) {
-      //Finaliza o circulo de carregando se o widget ainda estiver montado
-      if (currentContext.mounted) {
-        Navigator.pop(currentContext);
-        //Mosta mensagem de erro
-        showErrorMessage(e.code);
-      }
+      //Mosta mensagem de erro
+      showErrorMessage(e.code);
+    } finally {
+      setState(() => isLoading = false);
     }
   }
 
-  //Entrar pela conta google
-  void _signInWithGoogle() async {
-    //Armazenando o context em uma variável para evitar que meu context se torna inválido se o widget for desmontado durante o await
-    final currentContext = context;
-
-    //Mostrando carregando
-    _showDialog(currentContext);
-
-    //Tente se cadastrar
+  void signInWithGoogle(BuildContext context) async {
     try {
       await AuthService().signInWithGoogle();
-
-      if (currentContext.mounted) {
-        Navigator.pop(currentContext); // Fecha o loading
-        Navigator.pushReplacementNamed(currentContext, MyRoutes.carselection);
-      }
+      Navigator.pushReplacementNamed(context, MyRoutes.carselection);
     } catch (e) {
-      if (currentContext.mounted) {
-        Navigator.pop(currentContext); //Fecha o loading
-        //Mostra mensagem de erro
-        showErrorMessage(e.toString());
-      }
+      showErrorMessage(e.toString());
     }
   }
 
@@ -181,7 +157,11 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 25),
 
                 //sign in button
-                MyButton(onTap: signUserIn, text: "Entrar"),
+                MyButton(
+                  onTap: () => signUserIn(context), 
+                  text: "Entrar",
+                  isLoading: isLoading,
+                ),
 
                 const SizedBox(height: 50),
 
@@ -215,8 +195,9 @@ class _LoginPageState extends State<LoginPage> {
                     if (Platform.isAndroid)
                       // google button
                       SquareTile(
-                        onTap: _signInWithGoogle,
+                        onTap: () => signInWithGoogle,
                         imagePath: 'assets/images/google.png',
+                        isLoading: isLoadingSquare,
                       ),
 
                     if (Platform.isIOS)
@@ -224,6 +205,7 @@ class _LoginPageState extends State<LoginPage> {
                       SquareTile(
                         onTap: () {},
                         imagePath: 'assets/images/apple.png',
+                        isLoading: isLoadingSquare,
                       ),
                   ],
                 ),

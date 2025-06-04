@@ -20,6 +20,10 @@ class _RegisterPageState extends State<RegisterPage> {
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
+  //Variável para controlar CircularProgression do MyButton
+  bool isLoading = false;
+  bool isLoadingSquare = false;
+  
   void _showDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -31,15 +35,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
   //Sign user up method
   void signUserUp() async {
-
-    //Armazenando o context em uma variável para evitar que meu context se torna inválido se o widget for desmontado durante o await
-    final currentContext = context;
-
-    //Mostrando carregando
-    _showDialog(currentContext);
+    setState(() => isLoading = true);
 
     if (passwordController.text != confirmPasswordController.text) {
-      Navigator.pop(currentContext);
+      setState(() => isLoading = false);
       //Mostra mensagem de erro, senha não bate
       showErrorMessage("Senhas não estão iguais");
       return;
@@ -54,43 +53,29 @@ class _RegisterPageState extends State<RegisterPage> {
           password: passwordController.text,
         );
       }
-      if (currentContext.mounted) {
-        Navigator.pop(currentContext); // Fecha o loading
-        Navigator.pushReplacementNamed(currentContext, MyRoutes.carselection);
-      }
 
+      Navigator.pushReplacementNamed(context, MyRoutes.carselection);
     } on FirebaseAuthException catch (e) {
-      if (currentContext.mounted) {
-        //Finaliza o circulo de carregando
-        Navigator.pop(currentContext);
-        //Mosta mensagem de erro
-        showErrorMessage(e.code);
-      }
+      showErrorMessage(e.code);
+    } finally {
+      setState(() => isLoading = false);
     }
   }
 
   //Entrar pela conta google
   void _signInWithGoogle() async {
-    //Armazenando o context em uma variável para evitar que meu context se torna inválido se o widget for desmontado durante o await
-    final currentContext = context;
-
-    //Mostrando carregando
-    _showDialog(currentContext);
+    setState(() => isLoading = true);
 
     //Tente se cadastrar
     try {
       await AuthService().signInWithGoogle();
-
-      if (currentContext.mounted) {
-        Navigator.pop(currentContext);
-        Navigator.pushReplacementNamed(currentContext, MyRoutes.carselection);
-      }
+      Navigator.pushReplacementNamed(context, MyRoutes.carselection);
+      
     } catch (e) {
-      if (currentContext.mounted) {
-        Navigator.pop(currentContext); //Fecha o loading
         //Mostra mensagem de erro
         showErrorMessage(e.toString());
-      }
+    } finally {
+      setState(() => isLoading = false);
     }
   }
 
@@ -167,7 +152,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 const SizedBox(height: 25),
 
                 //sign in button
-                MyButton(onTap: signUserUp, text: "Cadastre-se"),
+                MyButton(onTap: signUserUp, text: "Cadastre-se", isLoading: isLoading,),
+
                 const SizedBox(height: 50),
 
                 //or continue with
@@ -202,6 +188,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       SquareTile(
                         onTap: _signInWithGoogle,
                         imagePath: 'assets/images/google.png',
+                        isLoading: isLoadingSquare,
                       ),
 
                     if (Platform.isIOS)
@@ -209,6 +196,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       SquareTile(
                         onTap: () {},
                         imagePath: 'assets/images/apple.png',
+                        isLoading: isLoadingSquare,
                       ),
                   ],
                 ),

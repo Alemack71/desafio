@@ -17,7 +17,8 @@ class _ResetPasswordState extends State<ResetPassword> {
 
   final passwordController = TextEditingController();
 
-  bool loading = false;
+  //Variável para controlar CircularProgression do MyButton
+  bool isLoading = false;
 
   void _showDialog(BuildContext context) {
     showDialog(
@@ -177,7 +178,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                 const SizedBox(height: 25),
 
                 //Botão para enviar requisição de resetar
-                MyButton(onTap: _resetPassword, text: "Enviar"),
+                MyButton(onTap: _resetPassword, text: "Enviar", isLoading: isLoading,),
 
                 const SizedBox(height: 50),
               ],

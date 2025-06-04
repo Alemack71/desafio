@@ -23,6 +23,9 @@ class _HomePageState extends State<HomePage> {
   late TextEditingController _modelController1;
   late TextEditingController _modelController2;
 
+  //Variável para controlar CircularProgression do MyButton
+  bool isLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -205,7 +208,7 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Expanded(
                       child: Center(
-                        child: MyButton(onTap: sendData, text: "Comparar"),
+                        child: MyButton(onTap: sendData, text: "Comparar", isLoading: isLoading,),
                       ),
                     ),
 
