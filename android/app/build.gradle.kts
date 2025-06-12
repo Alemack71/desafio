@@ -51,17 +51,26 @@ flutter {
 
 dependencies {
 
-  // Import the Firebase BoM
+    // Import the Firebase BoM
 
-  implementation(platform("com.google.firebase:firebase-bom:33.11.0"))
-  implementation("com.google.firebase:firebase-messaging:23.4.1")
- 
+    implementation(platform("com.google.firebase:firebase-bom:33.11.0"))
+    implementation("com.google.firebase:firebase-messaging:23.4.1")
+
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7")
 
-  // TODO: Add the dependencies for Firebase products you want to use
+    // TODO: Add the dependencies for Firebase products you want to use
 
-  // When using the BoM, don't specify versions in Firebase dependencies
+    // When using the BoM, don't specify versions in Firebase dependencies
 
-  // https://firebase.google.com/docs/android/setup#available-libraries
+    // https://firebase.google.com/docs/android/setup#available-libraries
+
+    // Add the dependency for the Firebase SDK for Google Analytics
+    implementation("com.google.firebase:firebase-analytics")
+
+    // TODO: Add the dependencies for any other Firebase products you want to use
+    // See https://firebase.google.com/docs/android/setup#available-libraries
+    // For example, add the dependencies for Firebase Authentication and Cloud Firestore
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
 
 }
