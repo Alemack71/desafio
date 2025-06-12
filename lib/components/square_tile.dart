@@ -24,21 +24,18 @@ class SquareTile extends StatelessWidget {
           color: Colors.grey[200],
         ),
         child: Center(
-          child: isLoading 
-            ? const SizedBox(
-                width: 24,
-                height: 24,
-                child: CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 2,
-                ),
-              )
-            :
-              Image.asset(
-                imagePath,
-                height: 50,
-              ),
-        ) 
+          child:
+              isLoading
+                  ? const SizedBox(
+                    width: 50,
+                    height: 50,
+                    child: CircularProgressIndicator(
+                      color: Colors.black,
+                      strokeWidth: 2,
+                    ),
+                  )
+                  : Image.asset(imagePath, height: 50),
+        ),
       ),
     );
   }

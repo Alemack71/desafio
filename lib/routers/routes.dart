@@ -20,11 +20,11 @@ class MyRoutes {
       case home:
         return MaterialPageRoute(builder: (_) => const AuthPage());
       case login:
-        return MaterialPageRoute(builder: (_) => LoginPage());
+        return MaterialPageRoute(builder: (_) => const LoginPage());
       case register:
-        return MaterialPageRoute(builder: (_) => RegisterPage());
+        return MaterialPageRoute(builder: (_) => const RegisterPage());
       case resetpassword:
-        return MaterialPageRoute(builder: (_) => ResetPassword());
+        return MaterialPageRoute(builder: (_) => const ResetPassword());
       case carselection:
         return MaterialPageRoute(builder: (_) => const HomePage());
       case chatbot:
