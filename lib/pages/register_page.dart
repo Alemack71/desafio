@@ -23,15 +23,6 @@ class _RegisterPageState extends State<RegisterPage> {
   //Variável para controlar CircularProgression do MyButton
   bool isLoading = false;
   bool isLoadingSquare = false;
-  
-  void _showDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return const Center(child: CircularProgressIndicator());
-      },
-    );
-  }
 
   //Sign user up method
   void signUserUp() async {
@@ -62,25 +53,33 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
-  //Entrar pela conta google
   void _signInWithGoogle() async {
-    setState(() => isLoading = true);
+    setState(() => isLoadingSquare = true);
 
-    //Tente se cadastrar
     try {
       await AuthService().signInWithGoogle();
+
+      // Verifica se o state ainda está ativo antes de usar a navegação
+      if (!mounted) return;
+      // Se o login for bem-sucedido, redireciona para a página de seleção de carro
+
       Navigator.pushReplacementNamed(context, MyRoutes.carselection);
-      
     } catch (e) {
-        //Mostra mensagem de erro
-        showErrorMessage(e.toString());
+      if (!mounted) return;
+
+      showErrorMessage(e.toString());
     } finally {
-      setState(() => isLoading = false);
+      if (mounted)
+        setState(
+          () => isLoadingSquare = false,
+        ); //se o state ainda estiver ativo, atualiza a tela com setState
     }
   }
 
   //Popup de credencial incorreta
   void showErrorMessage(String message) {
+    if (!mounted) return;
+
     //Traduzindo mensagem de email em uso
     if (message == 'email-already-in-use') {
       message = "email já em uso.";
@@ -152,7 +151,11 @@ class _RegisterPageState extends State<RegisterPage> {
                 const SizedBox(height: 25),
 
                 //sign in button
-                MyButton(onTap: signUserUp, text: "Cadastre-se", isLoading: isLoading,),
+                MyButton(
+                  onTap: signUserUp,
+                  text: "Cadastre-se",
+                  isLoading: isLoading,
+                ),
 
                 const SizedBox(height: 50),
 

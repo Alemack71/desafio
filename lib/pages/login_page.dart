@@ -24,21 +24,11 @@ class _LoginPageState extends State<LoginPage> {
   bool isLoading = false;
   bool isLoadingSquare = false;
 
-  void _showDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) {
-        return const Center(child: CircularProgressIndicator());
-      },
-    );
-  }
-
   //Entrar pelo firebase
-  void signUserIn(BuildContext context) async {
+  void signUserIn() async {
     //Ativando o loading com setState
     setState(() => isLoading = true);
-  
+
     //Tente se cadastrar
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -54,19 +44,31 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  void signInWithGoogle(BuildContext context) async {
+  void _signInWithGoogle() async {
+    setState(() => isLoadingSquare = true);
+
     try {
       await AuthService().signInWithGoogle();
+
+      // Verifica se o state ainda está ativo antes de usar a navegação
+      if (!mounted) return;
+      // Se o login for bem-sucedido, redireciona para a página de seleção de carro
+
       Navigator.pushReplacementNamed(context, MyRoutes.carselection);
     } catch (e) {
+      if (!mounted) return;
+
       showErrorMessage(e.toString());
+    } finally {
+      if (mounted) setState(() => isLoadingSquare = false,); //se o state ainda estiver ativo, atualiza a tela com setState
     }
   }
 
   //Popup de credencial incorreta
   void showErrorMessage(String code) {
-    String errorMessage;
+    if (!mounted) return;
 
+    String errorMessage;
     switch (code) {
       case 'invalid-credential':
         errorMessage = 'Email ou senha incorretos.';
@@ -158,7 +160,7 @@ class _LoginPageState extends State<LoginPage> {
 
                 //sign in button
                 MyButton(
-                  onTap: () => signUserIn(context), 
+                  onTap: () => signUserIn(),
                   text: "Entrar",
                   isLoading: isLoading,
                 ),
@@ -195,7 +197,7 @@ class _LoginPageState extends State<LoginPage> {
                     if (Platform.isAndroid)
                       // google button
                       SquareTile(
-                        onTap: () => signInWithGoogle,
+                        onTap: _signInWithGoogle,
                         imagePath: 'assets/images/google.png',
                         isLoading: isLoadingSquare,
                       ),
